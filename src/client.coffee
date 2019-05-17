@@ -14,6 +14,7 @@ class SlackClient
   # @constructor
   # @param {Object} options - Configuration options for this SlackClient instance
   # @param {string} options.token - Slack API token for authentication
+  # @param {Object] [options.web={}] - Configuration options for owned WebClient instance
   # @param {Object} [options.rtm={}] - Configuration options for owned RtmClient instance
   # @param {Object} [options.rtmStart={}] - Configuration options for RtmClient#start() method
   # @param {boolean} [options.noRawText=false] - Deprecated: All SlackTextMessages (subtype of TextMessage) will contain
@@ -27,8 +28,10 @@ class SlackClient
     # @rtm.dataStore property is publically accessible, so the recommended settings cannot be used without breaking
     # this object's API. The property is no longer used internally.
     @rtm = new RtmClient options.token, options.rtm
-    @web = new WebClient options.token, { maxRequestConcurrency: 1 }
 
+    @web = new WebClient options.token, options.web
+
+    @robot.logger.debug "WebClient initialized with options: #{JSON.stringify(options.web)}"
     @robot.logger.debug "RtmClient initialized with options: #{JSON.stringify(options.rtm)}"
     @rtmStartOpts = options.rtmStart || {}
 
